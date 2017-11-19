@@ -1,0 +1,147 @@
+About Elixir:
+
+- fault tolerant: if one part of program fails, whole app will not go down
+
+- has ports into other languages
+
+IEX:
+
+- #iex:break (exits out of a broken expression w/o exiting console)
+- h method shows the arity of a func, and docstrings
+- c("filename") compiles
+- r("filename") re-compiles
+- Typename. shows all funcs avail to type
+
+Types:
+Number:
+	int, float, Hex, Octal, Binary
+	rem: remainder (modulo)
+	div only operates on ints
+	to div floats? 
+Boolean:
+	truthiness
+	does not coerce 0/1 
+	operators: and && / or || / not !
+	== checks value, === (strict) checks type
+String
+	double quotes only
+	(single quotes are char lists)
+	everything is utf-8 encoded
+	<<foo>> denotes binary
+	IO.puts("outputs to console")
+	interpolation: "My string plus #{variable I already defined}"
+	concatenate: "Hello" <> "World" => HelloWorld
+Atoms
+	defined by :atomName
+	not garbage collected
+	evm has limit of # atoms (don't have users generate atoms, or can fill up the atom table. store user input as strings instead. strings are garbage collected)
+
+types have defined priority settings, to help sorting
+
+
+Variables
+	there's no such thing as assignment in elixir
+	variables *look* like assignment in other languages but is using pattern matching/ binding: 
+	"=" is not an assignment operator, it's a match operator
+
+Pinning
+	^ pins
+	checks pattern match against contents of the variable
+		a = 3 sets a to value of 3
+		a = 1 re-sets a to val of 1
+		^a = 5 checks to see if the value of a (1) matches 5
+		returns the match value if it matches
+		(whereas comparison operator returns whether or not it matches)
+Lists
+	singly-linked
+	++ concatenates lists
+	not indexable
+	can retrieve head/ tail (first elem, whatever is remaining) [h | tail]
+	[h | tail] = [1, 2, 3, 4] is pattern matching (head: 1, tail: [2, 3, 4])
+	CAN get last item:  List.last(listname)
+	fast/ cheap to create, slow/ expensive to modify and read
+
+Tuples
+	similar to lists, but fixed # of elements
+	expensive to modify, but good for pattern matching
+	good for matching function returns
+	common to start tuple with an atom
+
+Keyword Lists
+	(syntactic sugar for):
+	list of tuples, 1st elem in each tuple is an atom used as key
+	[greeting: "hello", receiver: "world"] is the same as:
+	[{:greeting, "hello"}, {:receiver, "world"}]
+	often used to make db queries (in Ecto: ORM for Phoenix)
+	ordered, keys don't have to be unique
+
+Maps
+	unordered
+	keys can be any type, eg:
+		%{:msg => "Hello", "receiver" => :world}
+	can use dot notation to call the value IF key is an atom
+	can write two ways: 
+		%{:msg => "Hello", :receiver => "world"}
+		%{msg: "Hello", receiver: "world"} 
+
+Pipe operator
+	passes the result of one function to the next function (as its first arg)
+	ex:
+	[1,2,3] |> Enum.map(fn(x) -> x *x end)
+	returns [1, 4, 9]
+	can also be written 
+	[1,2,3] |> Enum.map(&(&1*&1))
+
+Enumerables
+	Enum module functions generally take a collection as first arg
+	ie map/ reduce take colection and function, and perform the function on collection being passed
+		map: returns a list created from invoking func on each item in enum
+		reduce: invokes a func for each item in enum, passes each elem and the accumulator as arguments. if you don't provide an accumulator, it uses first element of the enumerable as accumulator
+
+(revisit)
+Eager vs Lazy Loading
+	(lazy doesn't wait for entire op to finish before returning?)
+	lazy returns a precomputed function instead of performing the operation
+	(see also: stream)
+
+Ignoring Values
+	_ denotes you don't need to rememer a particular value (similar to python)
+	eg [h | _]
+
+(revisit)
+Cases
+	using pattern matching to determine output conditions
+
+(revisit: struct, use, macros)
+Modules
+	collection of related functions
+	defmodule ModuleName do
+		def funcion_name(arg) do
+			thing to do
+		end
+	end
+
+	constants: can create var global to module. evaluated at compile time.
+	structs: ?
+
+	import: bring in func from another module
+	require: ensures a module is compiled & loaded
+	? import vs/ require: why not always use require?
+	use: injects APIs into modules 
+	macros: ? pattern matching on functions?
+
+Functions
+	anonymous: 
+			add = fn a, b -> a + b end
+		to invoke, need dot syntax:
+			add.(2, 2) 
+
+	module functions:
+		uses do/ end block
+	inline:
+
+	private:
+		use defp
+	pattern matching:
+		can define same func multiple times with diff keywords in func signature args, to output different things
+
